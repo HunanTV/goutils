@@ -8,13 +8,9 @@ import (
 	"github.com/op/go-logging"
 )
 
-const (
-	logName = "mgtv"
-)
-
 var (
 	//Log 日志
-	Log      *logging.Logger
+	Log      = logging.MustGetLogger("mgtv")
 	fileList = list.New()
 )
 
@@ -103,6 +99,5 @@ func InitLog(logPath, logLevel string) error {
 	if err := initLog(logPath, level); err != nil {
 		return err
 	}
-	Log = logging.MustGetLogger(logName)
 	return nil
 }
