@@ -1,4 +1,4 @@
-package utils
+package goutils
 
 import (
 	"container/list"
