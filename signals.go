@@ -1,4 +1,4 @@
-//程序信号捕捉
+// Package goutils 程序信号捕捉
 // SIGUSR1: 日志文件重新打开类似 nginx -s reload, 完成日志切割
 // SIGUSR2: 配置文件重新加载,可以完成比如日志级别的动态改变
 // @author zzh <zhouzhou@hunantv.com>
