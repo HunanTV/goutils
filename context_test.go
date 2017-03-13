@@ -31,7 +31,7 @@ func Test_AddNotesAndFlush(t *testing.T) {
 }
 
 func Test_LogLevel(t *testing.T) {
-	InitLog("", "INFO")
+	InitLog(nil)
 	context := NewContext("test")
 	context.Debug("you will not see me")
 	context.Info("you will see me")

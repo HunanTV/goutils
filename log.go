@@ -8,10 +8,28 @@ import (
 	"github.com/op/go-logging"
 )
 
+//LogInterface log日志接口，实现get path和get log level方法
+type LogInterface interface {
+	GetLogPath() string
+	GetLogLevel() string
+}
+
+type defaultLogger struct {
+}
+
+func (l defaultLogger) GetLogPath() string {
+	return ""
+}
+
+func (l defaultLogger) GetLogLevel() string {
+	return "INFO"
+}
+
 var (
 	//Log 日志
-	Log      = logging.MustGetLogger("mgtv")
-	fileList = list.New()
+	Log          = logging.MustGetLogger("mgtv")
+	fileList     = list.New()
+	logInterface LogInterface
 )
 
 // Example format string. Everything except the message has a custom color
@@ -90,8 +108,9 @@ func initLog(path string, level logging.Level) error {
 	return nil
 }
 
-// InitLog 日志初始化
-func InitLog(logPath, logLevel string) error {
+func reloadLog() error {
+	logPath := logInterface.GetLogPath()
+	logLevel := logInterface.GetLogLevel()
 	level, err := logging.LogLevel(logLevel)
 	if err != nil {
 		level = logging.INFO
@@ -100,4 +119,16 @@ func InitLog(logPath, logLevel string) error {
 		return err
 	}
 	return nil
+}
+
+// InitLog 日志初始化
+func InitLog(log LogInterface) error {
+	if log != nil {
+		logInterface = log
+	}
+	return reloadLog()
+}
+
+func init() {
+	logInterface = defaultLogger{}
 }
