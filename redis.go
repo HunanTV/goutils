@@ -94,7 +94,7 @@ func (r *Redis) Get(key string) (string, error) {
 	cmd := r.client.Get(key)
 	err := cmd.Err()
 	if err == redis.Nil {
-		Log.Notice("key:(%s) is not exists", key)
+		Log.Debug("key:(%s) is not exists", key)
 		return "", nil
 	} else if err != nil {
 		Log.Error("get key:(%s), but err:(%s)", key, err)
@@ -130,7 +130,7 @@ func (r *Redis) HGetAllMap(key string) (map[string]string, error) {
 	cmd := r.client.HGetAllMap(key)
 	err := cmd.Err()
 	if err == redis.Nil {
-		Log.Notice("key:(%s) is not exists", key)
+		Log.Debug("key:(%s) is not exists", key)
 		return nil, nil
 	}
 	if err != nil {
