@@ -26,6 +26,7 @@ type RedisClient interface {
 	Del(keys ...string) *redis.IntCmd
 	Keys(pattern string) *redis.StringSliceCmd
 	HGet(key, field string) *redis.StringCmd
+	HDel(key string, fields ...string) *redis.IntCmd
 	HGetAllMap(key string) *redis.StringStringMapCmd
 	HMSet(key, field, value string, pairs ...string) *redis.StatusCmd
 	Expire(key string, expiration time.Duration) *redis.BoolCmd
@@ -139,6 +140,14 @@ func (r *Redis) HGet(key, field string) (string, error) {
 	}
 	value := cmd.Val()
 	return value, err
+}
+
+func (r *Redis) HDel(key, field string) error {
+	if r.client == nil {
+		Log.Error("Get redis value, but redis r.client is nil!")
+		return errors.New("not initied")
+	}
+	return r.client.HDel(key, field).Err()
 }
 
 func (r *Redis) HGetAllMap(key string) (map[string]string, error) {
