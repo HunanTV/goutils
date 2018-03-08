@@ -25,6 +25,7 @@ type RedisClient interface {
 	TTL(key string) *redis.DurationCmd
 	Del(keys ...string) *redis.IntCmd
 	Keys(pattern string) *redis.StringSliceCmd
+	HGet(key, field string) *redis.StringCmd
 	HGetAllMap(key string) *redis.StringStringMapCmd
 	HMSet(key, field, value string, pairs ...string) *redis.StatusCmd
 	Expire(key string, expiration time.Duration) *redis.BoolCmd
@@ -50,7 +51,7 @@ func initRedisNormal(redisConfig RedisConfig) (*redis.Client, error) {
 	})
 	_, err := client.Ping().Result()
 	if err != nil {
-		Log.Error("init redis ping error")
+		Log.Error("init redis ping error:%s", err.Error())
 	}
 	return client, err
 }
@@ -120,6 +121,24 @@ func (r *Redis) Mget(keys ...string) ([]interface{}, error) {
 	}
 	result := r.client.MGet(keys...)
 	return result.Result()
+}
+
+func (r *Redis) HGet(key, field string) (string, error) {
+	if r.client == nil {
+		Log.Error("Get redis value, but redis r.client is nil!")
+		return "", errors.New("not initied")
+	}
+	cmd := r.client.HGet(key, field)
+	err := cmd.Err()
+	if err == redis.Nil {
+		Log.Debug("key:(%s) is not exists", key)
+		return "", nil
+	} else if err != nil {
+		Log.Error("get key:(%s), but err:(%s)", key, err)
+		return "", err
+	}
+	value := cmd.Val()
+	return value, err
 }
 
 func (r *Redis) HGetAllMap(key string) (map[string]string, error) {
